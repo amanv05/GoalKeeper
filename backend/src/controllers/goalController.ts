@@ -4,12 +4,11 @@ import { goalModel } from "../models/goalmodel.js";
 
 export const createGoal = async (req: Request, res: Response) => {
     try {
-    const { title, description, deadline, isCompleted } = req.body;
+    const { title, description, isCompleted } = req.body;
 
     const goalCreated = await goalModel.create({
         title: title,
         description: description,
-        deadline: deadline,
         isCompleted: isCompleted,
     });
 
@@ -34,13 +33,12 @@ export const createGoal = async (req: Request, res: Response) => {
 export const updateGoal = async (req: Request, res: Response) => {
     try{
     const id = req.params.id;
-    const { title, description , deadline } = req.body;
+    const { title, description } = req.body;
 
     const goalUpdated = await goalModel.findByIdAndUpdate(id,
         {
             title,
             description,
-            deadline
         },
         { new: true, runValidators: true },
     );
