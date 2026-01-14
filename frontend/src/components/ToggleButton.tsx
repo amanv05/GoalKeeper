@@ -2,7 +2,7 @@ import { CheckIcon } from "lucide-react";
 import { useState } from "react";
 
 interface toggleButtonProps {
-  isCompleted: boolean,
+  isCompleted: boolean;
 }
 
 const ToggleButton = (props: toggleButtonProps) => {

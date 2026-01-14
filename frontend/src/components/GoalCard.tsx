@@ -30,7 +30,6 @@ const GoalCard = ({
           <Button text={"Update"} onclick={() => onUpdate(_id)}></Button>
           <Button text={"Delete"} onclick={() => onDelete(_id)}></Button>
         </div>
-
       </div>
     </div>
   );
