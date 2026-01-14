@@ -1,4 +1,4 @@
-import AddGoalButton from "./AddGoalButton";
+import Button from "./Button";
 
 const NavBar = () => {
   return (
@@ -6,7 +6,10 @@ const NavBar = () => {
       <h1 className="font-jetbrains font-extrabold  text-3xl text-black cursor-pointer">
         GoalKeeper
       </h1>
-      <AddGoalButton />
+      <div className="flex gap-4">
+      <Button text={"Add"} />
+      <Button text={"Logout"} />
+      </div>
     </div>
   );
 };

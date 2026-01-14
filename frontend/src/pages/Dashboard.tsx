@@ -10,9 +10,7 @@ const Dashboard = () => {
     <div className="w-[50%] mx-auto">
       <NavBar />
       <div className="w-full">
-      <GoalCard title={"Go to Gym"} description={"Go to gym daily nahi gaya toh tu Gay h"} isCompleted={true}/>
-      <GoalCard title={"Go to Gym"} description={"Go to gym daily nahi gaya toh tu Gay h"} isCompleted={true}/>
-      <GoalCard title={"Go to Gym"} description={"Go to gym daily nahi gaya toh tu Gay h"} isCompleted={true}/>
+      <GoalCard title={"Go to Gym"} description={"Go to gym daily nahi gaya toh tu Gay h"} isCompleted={false} />
     </div>
     </div>
     </Background>
