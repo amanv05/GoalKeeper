@@ -1,1 +1,1 @@
-{"root":["./src/db.ts","./src/server.ts","./src/controllers/goalcontroller.ts","./src/models/goalmodel.ts","./src/routes/goalroute.ts"],"version":"5.9.2"}
+{"root":["./src/db.ts","./src/override.d.ts","./src/server.ts","./src/controllers/goalcontroller.ts","./src/controllers/usercontroller.ts","./src/middleware/usermiddleware.ts","./src/models/goalmodel.ts","./src/models/usermodel.ts","./src/routes/goalrouter.ts","./src/routes/userrouter.ts"],"version":"5.9.2"}

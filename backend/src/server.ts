@@ -3,7 +3,8 @@ dotenv.config();
 
 import express from "express";
 import { DBConnect } from "./db.js";
-import goalRouter from "./routes/goalRoute.js";
+import goalRouter from "./routes/goalRouter.js";
+import userRouter from "./routes/userRouter.js";
 DBConnect();
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 const PORT = process.env.PORT;
 
 app.use("/api/v1/goal", goalRouter);
+app.use("/api/v1/user", userRouter);
 
 app.listen(PORT, () => {
   console.log("Server is Running");
