@@ -7,7 +7,7 @@ const NavBar = () => {
         GoalKeeper
       </h1>
       <div className="flex gap-4">
-        <Button text={"Add"} />
+        <Button  text={"Add"} />
         <Button text={"Logout"} />
       </div>
     </div>
