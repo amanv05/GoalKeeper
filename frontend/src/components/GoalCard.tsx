@@ -26,7 +26,7 @@ const GoalCard = ({
           <h2 className="font-bold font-jetbrains truncate">{title}</h2>
           <p className="font-jetbrains truncate">{description}</p>
         </div>
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-center gap-4 fixed ml-132">
           <Button text={"Update"} ></Button>
           <Button text={"Delete"} ></Button>
         </div>

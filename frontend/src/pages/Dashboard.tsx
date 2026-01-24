@@ -4,6 +4,7 @@ import Background from "../components/Background";
 import { useEffect, useState } from "react";
 import BACKEND_URL from "../config";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface GoalTypes {
   _id: string;
@@ -14,6 +15,7 @@ interface GoalTypes {
 
 const Dashboard = () => {
   const [goals, setGoals] = useState<GoalTypes[]>([]);
+  const navigate = useNavigate();
 
   const getGoals = async () => {
     const token = localStorage.getItem("token");
@@ -22,9 +24,9 @@ const Dashboard = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(response.data);
+    console.log(response.data.data);
     if (response) {
-      setGoals(response.data);
+      setGoals(response.data.data);
     }
   };
 
@@ -32,20 +34,35 @@ const Dashboard = () => {
     getGoals();
   }, []);
 
-console.log(goals);
+
+  const deleteGoals = async (id: string) => {
+    const token = localStorage.getItem("token");
+    if(!token) {
+      alert("User not signed in");
+      navigate("/")
+    }
+    await axios.delete(`${BACKEND_URL}/api/v1/goal/delete/${id}`,{
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    getGoals();
+  }
+
   return (
     <>
       <Background>
         <div className="w-[50%] mx-auto">
           <NavBar />
           <div className="w-full">
-            {goals.map(({ _id, title, description, isCompleted, }) => (
+            {Array.isArray(goals) && goals.map(({ _id, title, description, isCompleted }) => (
               <GoalCard
                 key={_id}
                 _id={_id}
                 title={title}
                 description={description}
                 isCompleted={isCompleted}
+                onDelete={() => deleteGoals(_id)}
               />
             ))}
           </div>
