@@ -1,9 +1,14 @@
 import Modal from "../components/Modal";
 
+interface UpdateGoalModalProps {
+  onclick?: () => void;
+  firstRef: any;
+  secondRef: any;
+}
+
 const UpdateGoalModal = () => {
   return (
-    <div className="w-full h-screen bg-white/80 relative flex justify-center items-center">
-      <div className="absolute">
+    <div className="flex justify-center items-center mt-40">
         <Modal
           headText={"Update Goal"}
           firstText={"Goal"}
@@ -12,7 +17,7 @@ const UpdateGoalModal = () => {
           inputSecond={"Type Your Description"}
           buttonText={"Update"}
         />
-      </div>
+
     </div>
   );
 };

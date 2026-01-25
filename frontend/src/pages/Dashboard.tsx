@@ -24,7 +24,6 @@ const Dashboard = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(response.data.data);
     if (response) {
       setGoals(response.data.data);
     }
@@ -34,37 +33,43 @@ const Dashboard = () => {
     getGoals();
   }, []);
 
-
   const deleteGoals = async (id: string) => {
     const token = localStorage.getItem("token");
-    if(!token) {
+    if (!token) {
       alert("User not signed in");
-      navigate("/")
+      navigate("/");
     }
-    await axios.delete(`${BACKEND_URL}/api/v1/goal/delete/${id}`,{
+    await axios.delete(`${BACKEND_URL}/api/v1/goal/delete/${id}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+        Authorization: `Bearer ${token}`,
+      },
+    });
     getGoals();
-  }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+    alert("Logged out successfully");
+  };
 
   return (
     <>
       <Background>
         <div className="w-[50%] mx-auto">
-          <NavBar />
+          <NavBar logoutFunction={logout} addFunction={() => {}} />
           <div className="w-full">
-            {Array.isArray(goals) && goals.map(({ _id, title, description, isCompleted }) => (
-              <GoalCard
-                key={_id}
-                _id={_id}
-                title={title}
-                description={description}
-                isCompleted={isCompleted}
-                onDelete={() => deleteGoals(_id)}
-              />
-            ))}
+            {Array.isArray(goals) &&
+              goals.map(({ _id, title, description, isCompleted }) => (
+                <GoalCard
+                  key={_id}
+                  _id={_id}
+                  title={title}
+                  description={description}
+                  isCompleted={isCompleted}
+                  onDelete={deleteGoals}
+                />
+              ))}
           </div>
         </div>
       </Background>
