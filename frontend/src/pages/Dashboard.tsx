@@ -1,7 +1,8 @@
 import NavBar from "../components/NavBar";
 import GoalCard from "../components/GoalCard";
 import Background from "../components/Background";
-import { useEffect, useState } from "react";
+import AddGoalModal from "../modals/AddGoalModal";
+import { useEffect, useRef, useState } from "react";
 import BACKEND_URL from "../config";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +16,9 @@ interface GoalTypes {
 
 const Dashboard = () => {
   const [goals, setGoals] = useState<GoalTypes[]>([]);
+  const [goalModal, setGoalModal] = useState(false);
+  const titleRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   const getGoals = async () => {
@@ -53,24 +57,64 @@ const Dashboard = () => {
     alert("Logged out successfully");
   };
 
+  const createGoal = async () => {
+    const title = titleRef.current?.value;
+    const description = descriptionRef.current?.value;
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("User not signed in");
+      return;
+    }
+
+    const response = await axios.post(
+      `${BACKEND_URL}/api/v1/goal/create`,
+      {
+        title: title,
+        description: description,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (response) {
+      getGoals();
+      setGoalModal((x) => !x);
+    }
+  };
+
   return (
     <>
       <Background>
         <div className="w-[50%] mx-auto">
-          <NavBar logoutFunction={logout} addFunction={() => {}} />
-          <div className="w-full">
-            {Array.isArray(goals) &&
-              goals.map(({ _id, title, description, isCompleted }) => (
-                <GoalCard
-                  key={_id}
-                  _id={_id}
-                  title={title}
-                  description={description}
-                  isCompleted={isCompleted}
-                  onDelete={deleteGoals}
-                />
-              ))}
-          </div>
+          <NavBar
+            logoutFunction={logout}
+            addFunction={() => setGoalModal((x) => !x)}
+          />
+          {goalModal ? (
+            <AddGoalModal
+              firstRef={titleRef}
+              secondRef={descriptionRef}
+              onclick={createGoal}
+            />
+          ) : (
+            <div className="w-full">
+              {Array.isArray(goals) &&
+                goals.map(({ _id, title, description, isCompleted }) => (
+                  <GoalCard
+                    key={_id}
+                    _id={_id}
+                    title={title}
+                    description={description}
+                    isCompleted={isCompleted}
+                    onDelete={deleteGoals}
+                  />
+                ))}
+            </div>
+          )}
         </div>
       </Background>
     </>

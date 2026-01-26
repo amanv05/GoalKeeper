@@ -1,9 +1,14 @@
 import Modal from "../components/Modal";
 
-const AddGoalModal = () => {
+interface AddGoalModalProps {
+  onclick?: () => void;
+  firstRef: any;
+  secondRef: any;
+}
+
+const AddGoalModal = ({onclick, firstRef, secondRef}: AddGoalModalProps) => {
   return (
-    <div className="w-full h-screen bg-white/80 relative flex justify-center items-center">
-      <div className="absolute">
+    <div className="flex justify-center items-center mt-40">
         <Modal
           headText={"Add Goal"}
           firstText={"Goal"}
@@ -11,9 +16,11 @@ const AddGoalModal = () => {
           inputFirst={"Type Your Goal"}
           inputSecond={"Type Your Description"}
           buttonText={"Add"}
+          onclick={onclick}
+          firstRef={firstRef}
+          secondRef={secondRef}
         />
       </div>
-    </div>
   );
 };
 
