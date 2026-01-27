@@ -90,6 +90,10 @@ const Dashboard = () => {
     }
   };
 
+  const updatedGoal = async () => {
+
+  }
+
   return (
     <>
       <Background>
@@ -98,12 +102,14 @@ const Dashboard = () => {
             logoutFunction={logout}
             addFunction={() => setGoalModal((x) => !x)}
           />
-          { goalModal ? (
+          {goalModal ? (
             <AddGoalModal
               firstRef={titleRef}
               secondRef={descriptionRef}
               onclick={createGoal}
             />
+          ) : updateGoal ? (
+            <UpdateGoalModal firstRef={updatedTitle} secondRef={updatedDescription} onclick={updatedGoal} />
           ) : (
             <div className="w-full">
               {Array.isArray(goals) &&
@@ -115,7 +121,7 @@ const Dashboard = () => {
                     description={description}
                     isCompleted={isCompleted}
                     onDelete={deleteGoals}
-                    onUpdate={() => setUpdateGoal(true)}
+                    onUpdate={() => setUpdateGoal((x) => !x)}
                   />
                 ))}
             </div>

@@ -4,7 +4,7 @@ interface GoalCardProps {
   description: string;
   isCompleted: boolean;
   onDelete: (id: string) => void;
-  onUpdate?: (id: string) => void;
+  onUpdate: () => void;
 }
 
 import ToggleButton from "./ToggleButton";
@@ -31,7 +31,7 @@ const GoalCard = ({
           <p className="font-jetbrains truncate">{description}</p>
         </div>
         <div className="flex items-center justify-center gap-4 fixed ml-132">
-          <Button text={"Update"} onclick={() => onUpdate(_id)}></Button>
+          <Button text={"Update"} onclick={() => onUpdate()}></Button>
           <Button text={"Delete"} onclick={() => onDelete(_id)}></Button>
         </div>
       </div>
