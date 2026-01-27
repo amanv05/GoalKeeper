@@ -2,6 +2,7 @@ import NavBar from "../components/NavBar";
 import GoalCard from "../components/GoalCard";
 import Background from "../components/Background";
 import AddGoalModal from "../modals/AddGoalModal";
+import UpdateGoalModal from "../modals/UpdateGoalModal";
 import { useEffect, useRef, useState } from "react";
 import BACKEND_URL from "../config";
 import axios from "axios";
@@ -17,8 +18,11 @@ interface GoalTypes {
 const Dashboard = () => {
   const [goals, setGoals] = useState<GoalTypes[]>([]);
   const [goalModal, setGoalModal] = useState(false);
+  const [updateGoal, setUpdateGoal] = useState(false);
   const titleRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLInputElement>(null);
+  const updatedTitle = useRef<HTMLInputElement>(null);
+  const updatedDescription = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   const getGoals = async () => {
@@ -94,7 +98,7 @@ const Dashboard = () => {
             logoutFunction={logout}
             addFunction={() => setGoalModal((x) => !x)}
           />
-          {goalModal ? (
+          { goalModal ? (
             <AddGoalModal
               firstRef={titleRef}
               secondRef={descriptionRef}
@@ -111,6 +115,7 @@ const Dashboard = () => {
                     description={description}
                     isCompleted={isCompleted}
                     onDelete={deleteGoals}
+                    onUpdate={() => setUpdateGoal(true)}
                   />
                 ))}
             </div>

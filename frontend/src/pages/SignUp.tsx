@@ -15,7 +15,7 @@ const SignUp = () => {
       const email = emailRef.current?.value;
       const password = passwordRef.current?.value;
 
-      await axios.post(`${BACKEND_URL}/api/v1/user/signin`, {
+      await axios.post(`${BACKEND_URL}/api/v1/user/signup`, {
         email,
         password,
       });
