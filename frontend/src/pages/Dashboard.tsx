@@ -19,6 +19,7 @@ const Dashboard = () => {
   const [goals, setGoals] = useState<GoalTypes[]>([]);
   const [goalModal, setGoalModal] = useState(false);
   const [updateGoal, setUpdateGoal] = useState(false);
+  const [goalID, setGoalID] = useState<string>();
   const titleRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLInputElement>(null);
   const updatedTitle = useRef<HTMLInputElement>(null);
@@ -90,9 +91,40 @@ const Dashboard = () => {
     }
   };
 
-  const updatedGoal = async () => {
+  const openUpdateModal = (id: string) => {
+    setGoalID(id);
+    setUpdateGoal((x) => !x);
+  };
 
-  }
+  const goalUpdation = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("User not signed in");
+      navigate("/");
+    }
+
+    const id = goalID;
+    const title = updatedTitle.current?.value;
+    const description = updatedDescription.current?.value;
+
+    const updated = await axios.patch(
+      `${BACKEND_URL}/api/v1/goal/update/${id}`,
+      {
+        title: title,
+        description: description,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (updated) {
+      getGoals();
+      setUpdateGoal((x) => !x);
+    }
+  };
 
   return (
     <>
@@ -109,7 +141,11 @@ const Dashboard = () => {
               onclick={createGoal}
             />
           ) : updateGoal ? (
-            <UpdateGoalModal firstRef={updatedTitle} secondRef={updatedDescription} onclick={updatedGoal} />
+            <UpdateGoalModal
+              firstRef={updatedTitle}
+              secondRef={updatedDescription}
+              onclick={goalUpdation}
+            />
           ) : (
             <div className="w-full">
               {Array.isArray(goals) &&
@@ -121,7 +157,7 @@ const Dashboard = () => {
                     description={description}
                     isCompleted={isCompleted}
                     onDelete={deleteGoals}
-                    onUpdate={() => setUpdateGoal((x) => !x)}
+                    onUpdate={openUpdateModal}
                   />
                 ))}
             </div>
