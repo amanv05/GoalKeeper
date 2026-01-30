@@ -149,13 +149,12 @@ const Dashboard = () => {
           ) : (
             <div className="w-full">
               {Array.isArray(goals) &&
-                goals.map(({ _id, title, description, isCompleted }) => (
+                goals.map(({ _id, title, description }) => (
                   <GoalCard
                     key={_id}
                     _id={_id}
                     title={title}
                     description={description}
-                    isCompleted={isCompleted}
                     onDelete={deleteGoals}
                     onUpdate={openUpdateModal}
                   />
