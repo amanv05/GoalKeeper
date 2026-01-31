@@ -126,6 +126,26 @@ const Dashboard = () => {
     }
   };
 
+  const toggleGoal = async (id: string, nextValue: boolean) => {
+    const token = localStorage.getItem("token");
+    if(!token) {
+      alert("User not signed in")
+      navigate("/");
+    }
+
+    const toggled = await axios.patch(`${BACKEND_URL}/api/v1/goal/completed/${id}`,{
+      isCompleted: nextValue,
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
+
+    if(toggled) {
+      getGoals();
+    }
+  }
+
   return (
     <>
       <Background>
@@ -149,14 +169,16 @@ const Dashboard = () => {
           ) : (
             <div className="w-full">
               {Array.isArray(goals) &&
-                goals.map(({ _id, title, description }) => (
+                goals.map(({ _id, title, description, isCompleted }) => (
                   <GoalCard
                     key={_id}
                     _id={_id}
                     title={title}
                     description={description}
+                    isCompleted={isCompleted}
                     onDelete={deleteGoals}
                     onUpdate={openUpdateModal}
+                    onToggle={toggleGoal}
                   />
                 ))}
             </div>

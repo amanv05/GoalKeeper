@@ -128,3 +128,38 @@ export const deleteGoal = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const tickGoal = async (req: Request, res:Response) => {
+  try {
+  const id = req.params.id;
+  const userID = req.userID;
+  const { isCompleted } = req.body;
+
+  if(!userID) {
+        return res.status(401).json({message: "User not signed in"});
+    }
+
+    const goalCompleted = await goalModel.findOneAndUpdate(
+      {
+        _id: id,
+        userID: userID,
+      },
+      { $set: { isCompleted }},
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if(goalCompleted) {
+      return res.status(200).json({
+        message: "goal tick marked successfully"
+      })
+    }
+  } catch (e) {
+    console.error("error occured while doing tick mark", e);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+} 
