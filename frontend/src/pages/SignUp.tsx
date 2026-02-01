@@ -2,13 +2,30 @@ import Background from "../components/Background";
 import Modal from "../components/Modal";
 import BACKEND_URL from "../config";
 import { useRef } from "react";
+import { useState } from "react";
+import Alert from "../components/Alert";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const [openAlert, setOpenAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
   const navigate = useNavigate();
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+  };
+
+  const handleOpenAlert = (message: string) => {
+    setOpenAlert(true);
+    setAlertMessage(message);
+
+    setTimeout(() => {
+      handleCloseAlert();
+    }, 2000);
+  };
 
   const signup = async () => {
     try {
@@ -20,14 +37,18 @@ const SignUp = () => {
         password,
       });
 
-      alert("User signed up successfully");
-      navigate("/signin");
+      handleOpenAlert("User signed up successfully");
+      setTimeout(() => {
+        navigate("/signin");
+      }, 1000);
     } catch (error: any) {
       if (error.response?.data?.message === "User already exists") {
-        alert("User already exists redirecting to Sign in page...");
-        navigate("/signin");
+        handleOpenAlert("User already exists redirecting to Sign in page...");
+        setTimeout(() => {
+          navigate("/signin");
+        }, 1000);
       } else {
-        alert("Sign up failed");
+        handleOpenAlert("Sign up failed");
       }
     }
   };
@@ -35,7 +56,7 @@ const SignUp = () => {
   return (
     <div>
       <Background>
-        <div className="w-full h-screen flex justify-center items-center">
+        <div className="relative w-full h-screen flex justify-center items-center">
           <Modal
             headText={"Sign Up"}
             firstText={"Email"}
@@ -47,6 +68,13 @@ const SignUp = () => {
             secondRef={passwordRef}
             onclick={() => signup()}
           />
+          <div className="absolute bottom-16 right-18">
+            <Alert
+              open={openAlert}
+              message={alertMessage as string}
+              onClose={handleCloseAlert}
+            />
+          </div>
         </div>
       </Background>
     </div>

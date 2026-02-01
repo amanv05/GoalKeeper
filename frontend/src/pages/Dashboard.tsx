@@ -20,14 +20,14 @@ const Dashboard = () => {
   const [goals, setGoals] = useState<GoalTypes[]>([]);
   const [goalModal, setGoalModal] = useState(false);
   const [updateGoal, setUpdateGoal] = useState(false);
-  const [goalID, setGoalID] = useState<string>();
+  const [goalID, setGoalID] = useState<string>("");
   const titleRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLInputElement>(null);
   const updatedTitle = useRef<HTMLInputElement>(null);
   const updatedDescription = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const [openAlert, setOpenAlert] = useState<boolean>(false);
-  const [alertMessage, setAlertMessage] = useState<string>();
+  const [alertMessage, setAlertMessage] = useState<string>("");
 
   const getGoals = async () => {
     const token = localStorage.getItem("token");

@@ -1,14 +1,31 @@
 import { useRef } from "react";
+import { useState } from "react";
 import Background from "../components/Background";
 import Modal from "../components/Modal";
 import BACKEND_URL from "../config";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Alert from "../components/Alert";
 
 const Signin = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const [openAlert, setOpenAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
   const navigate = useNavigate();
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+  };
+
+  const handleOpenAlert = (message: string) => {
+    setOpenAlert(true);
+    setAlertMessage(message);
+
+    setTimeout(() => {
+      handleCloseAlert();
+    }, 2000);
+  };
 
   const signin = async () => {
     try {
@@ -22,15 +39,19 @@ const Signin = () => {
 
       if (response) {
         localStorage.setItem("token", response.data.token);
-        alert("User signed in successfully");
-        navigate("/dashboard");
+        handleOpenAlert("User signed in successfully");
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
       }
     } catch (error: any) {
       if (error.response?.data?.message === "User not exist") {
-        alert("User don't exist navigating to Sign up page...");
-        navigate("/signup");
+        handleOpenAlert("User don't exist navigating to Sign up page...");
+        setTimeout(() => {
+          navigate("/signup");
+        }, 1000);
       } else {
-        alert("Sign in failed");
+        handleOpenAlert("Sign in failed");
       }
     }
   };
@@ -38,7 +59,7 @@ const Signin = () => {
   return (
     <div>
       <Background>
-        <div className="w-full h-screen flex justify-center items-center">
+        <div className="relative w-full h-screen flex justify-center items-center">
           <Modal
             headText={"Sign In"}
             firstText={"Email"}
@@ -50,6 +71,13 @@ const Signin = () => {
             secondRef={passwordRef}
             onclick={() => signin()}
           />
+          <div className="absolute bottom-16 right-18">
+            <Alert
+              open={openAlert}
+              message={alertMessage as string}
+              onClose={handleCloseAlert}
+            />
+          </div>
         </div>
       </Background>
     </div>
