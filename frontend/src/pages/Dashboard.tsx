@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import BACKEND_URL from "../config";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Alert from "../components/Alert";
 
 interface GoalTypes {
   _id: string;
@@ -25,6 +26,8 @@ const Dashboard = () => {
   const updatedTitle = useRef<HTMLInputElement>(null);
   const updatedDescription = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const [openAlert, setOpenAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>();
 
   const getGoals = async () => {
     const token = localStorage.getItem("token");
@@ -42,11 +45,26 @@ const Dashboard = () => {
     getGoals();
   }, []);
 
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+  };
+
+  const handleOpenAlert = (message: string) => {
+    setOpenAlert(true);
+    setAlertMessage(message);
+
+    setTimeout(() => {
+      handleCloseAlert();
+    }, 2000);
+  };
+
   const deleteGoals = async (id: string) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("User not signed in");
-      navigate("/");
+      handleOpenAlert("User not signed in");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     }
     await axios.delete(`${BACKEND_URL}/api/v1/goal/delete/${id}`, {
       headers: {
@@ -54,12 +72,15 @@ const Dashboard = () => {
       },
     });
     getGoals();
+    handleOpenAlert("Goal deleted successfully");
   };
 
   const logout = () => {
     localStorage.removeItem("token");
-    navigate("/");
-    alert("Logged out successfully");
+    handleOpenAlert("User logged out successfully");
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
   };
 
   const createGoal = async () => {
@@ -68,8 +89,10 @@ const Dashboard = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      alert("User not signed in");
-      return;
+      handleOpenAlert("User not signed in");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     }
 
     const response = await axios.post(
@@ -88,6 +111,7 @@ const Dashboard = () => {
     if (response) {
       getGoals();
       setGoalModal((x) => !x);
+      handleOpenAlert("Goal created successfully");
     }
   };
 
@@ -99,8 +123,10 @@ const Dashboard = () => {
   const goalUpdation = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("User not signed in");
-      navigate("/");
+      handleOpenAlert("User not signed in");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     }
 
     const id = goalID;
@@ -122,67 +148,94 @@ const Dashboard = () => {
 
     if (updated) {
       getGoals();
+      handleOpenAlert("Goal updated successfully");
       setUpdateGoal((x) => !x);
     }
   };
 
   const toggleGoal = async (id: string, nextValue: boolean) => {
     const token = localStorage.getItem("token");
-    if(!token) {
-      alert("User not signed in")
-      navigate("/");
+
+    if (!token) {
+      handleOpenAlert("User not signed in");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     }
 
-    const toggled = await axios.patch(`${BACKEND_URL}/api/v1/goal/completed/${id}`,{
-      isCompleted: nextValue,
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    })
+    const toggled = await axios.patch(
+      `${BACKEND_URL}/api/v1/goal/completed/${id}`,
+      {
+        isCompleted: nextValue,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
 
-    if(toggled) {
+    if (toggled) {
+      if (nextValue === true) {
+        handleOpenAlert("Goal Completed 🥳");
+      }
       getGoals();
     }
-  }
+  };
 
   return (
     <>
       <Background>
-        <div className="w-[50%] mx-auto">
-          <NavBar
-            logoutFunction={logout}
-            addFunction={() => setGoalModal((x) => !x)}
-          />
-          {goalModal ? (
-            <AddGoalModal
-              firstRef={titleRef}
-              secondRef={descriptionRef}
-              onclick={createGoal}
+        <div className="relative w-full h-screen">
+          <div className="w-[50%] mx-auto">
+            <NavBar
+              logoutFunction={logout}
+              addFunction={() => setGoalModal((x) => !x)}
             />
-          ) : updateGoal ? (
-            <UpdateGoalModal
-              firstRef={updatedTitle}
-              secondRef={updatedDescription}
-              onclick={goalUpdation}
+            {goalModal ? (
+              <AddGoalModal
+                firstRef={titleRef}
+                secondRef={descriptionRef}
+                onclick={createGoal}
+              />
+            ) : updateGoal ? (
+              <UpdateGoalModal
+                firstRef={updatedTitle}
+                secondRef={updatedDescription}
+                onclick={goalUpdation}
+              />
+            ) : goals && goals.length > 0 ? (
+              <div className="w-full">
+                {Array.isArray(goals) &&
+                  goals.map(({ _id, title, description, isCompleted }) => (
+                    <GoalCard
+                      key={_id}
+                      _id={_id}
+                      title={title}
+                      description={description}
+                      isCompleted={isCompleted}
+                      onDelete={deleteGoals}
+                      onUpdate={openUpdateModal}
+                      onToggle={toggleGoal}
+                    />
+                  ))}
+              </div>
+            ) : (
+              <div className="flex justify-center items-center mt-60">
+                <h1 className="font-jetbrains text-4xl text-center font-bold tracking-wide">
+                  Welcome to GoalKeeper{" "}
+                  <span className="block">Add Your Daily Goals</span>
+                </h1>
+              </div>
+            )}
+          </div>
+          <div className="absolute bottom-16 right-18">
+            <Alert
+              open={openAlert}
+              message={alertMessage as string}
+              onClose={handleCloseAlert}
             />
-          ) : (
-            <div className="w-full">
-              {Array.isArray(goals) &&
-                goals.map(({ _id, title, description, isCompleted }) => (
-                  <GoalCard
-                    key={_id}
-                    _id={_id}
-                    title={title}
-                    description={description}
-                    isCompleted={isCompleted}
-                    onDelete={deleteGoals}
-                    onUpdate={openUpdateModal}
-                    onToggle={toggleGoal}
-                  />
-                ))}
-            </div>
-          )}
+          </div>
         </div>
       </Background>
     </>
