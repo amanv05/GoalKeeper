@@ -4,7 +4,11 @@ dotenv.config();
 
 export const DBConnect = async () => {
   try {
-    await mongoose.connect(process.env.DBurl as string);
+    if (!process.env.DBUrl) {
+      throw new Error("MONGO_URI is missing");
+    }
+
+    await mongoose.connect(process.env.DBUrl as string);
     console.log("Database connected successfully");
   } catch (e) {
     console.error("error while connecting db", e);
