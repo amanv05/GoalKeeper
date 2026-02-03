@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 export const userMiddleware = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const authHeader = req.headers.authorization;
@@ -15,21 +15,21 @@ export const userMiddleware = (
       });
     }
 
-    if(!authHeader.startsWith("Bearer")) {
-        return res.status(401).json({
-            message: "Invalid token format",
-        });
+    if (!authHeader.startsWith("Bearer")) {
+      return res.status(401).json({
+        message: "Invalid token format",
+      });
     }
 
     const token = authHeader.split(" ")[1];
 
-    if(!token) {
-        return res.status(401).json({message: "Invalid token"})
+    if (!token) {
+      return res.status(401).json({ message: "Invalid token" });
     }
 
     const tokenVerified = jwt.verify(
       token,
-      process.env.JWT_SECRET as string
+      process.env.JWT_SECRET as string,
     ) as { id: string };
 
     if (tokenVerified) {

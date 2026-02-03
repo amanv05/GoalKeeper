@@ -49,11 +49,11 @@ export const updateGoal = async (req: Request, res: Response) => {
         _id: id,
         userID: userID,
       },
-      { $set: { title, description }},
+      { $set: { title, description } },
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     if (goalUpdated) {
@@ -79,10 +79,10 @@ export const getGoal = async (req: Request, res: Response) => {
     const userID = req.userID;
 
     if (!userID) {
-        return res.status(401).json({message: "User not verified"})
+      return res.status(401).json({ message: "User not verified" });
     }
 
-    const goals = await goalModel.find({userID: userID});
+    const goals = await goalModel.find({ userID: userID });
 
     if (goals) {
       return res.status(200).json({
@@ -106,11 +106,14 @@ export const deleteGoal = async (req: Request, res: Response) => {
     const id = req.params.id;
     const userID = req.userID;
 
-    if(!userID) {
-        return res.status(401).json({message: "User not signed in"});
+    if (!userID) {
+      return res.status(401).json({ message: "User not signed in" });
     }
 
-    const goalDeleted = await goalModel.findOneAndDelete({_id: id, userID: userID});
+    const goalDeleted = await goalModel.findOneAndDelete({
+      _id: id,
+      userID: userID,
+    });
 
     if (goalDeleted) {
       return res.status(201).json({
@@ -129,14 +132,14 @@ export const deleteGoal = async (req: Request, res: Response) => {
   }
 };
 
-export const tickGoal = async (req: Request, res:Response) => {
+export const tickGoal = async (req: Request, res: Response) => {
   try {
-  const id = req.params.id;
-  const userID = req.userID;
-  const { isCompleted } = req.body;
+    const id = req.params.id;
+    const userID = req.userID;
+    const { isCompleted } = req.body;
 
-  if(!userID) {
-        return res.status(401).json({message: "User not signed in"});
+    if (!userID) {
+      return res.status(401).json({ message: "User not signed in" });
     }
 
     const goalCompleted = await goalModel.findOneAndUpdate(
@@ -144,17 +147,17 @@ export const tickGoal = async (req: Request, res:Response) => {
         _id: id,
         userID: userID,
       },
-      { $set: { isCompleted }},
+      { $set: { isCompleted } },
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
-    if(goalCompleted) {
+    if (goalCompleted) {
       return res.status(200).json({
-        message: "goal tick marked successfully"
-      })
+        message: "goal tick marked successfully",
+      });
     }
   } catch (e) {
     console.error("error occured while doing tick mark", e);
@@ -162,4 +165,4 @@ export const tickGoal = async (req: Request, res:Response) => {
       message: "Internal server error",
     });
   }
-} 
+};

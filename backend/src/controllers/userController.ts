@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import z, { safeParse } from "zod";
 
-
 export const Signup = async (req: Request, res: Response) => {
   const requiredBody = z.object({
     email: z.email(),
@@ -95,7 +94,7 @@ export const Signin = async (req: Request, res: Response) => {
       {
         id: userExist._id,
       },
-      process.env.JWT_SECRET as string
+      process.env.JWT_SECRET as string,
     );
 
     if (token) {
